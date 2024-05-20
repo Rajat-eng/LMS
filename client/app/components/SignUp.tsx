@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { FcGoogle } from "react-icons/fc";
@@ -7,10 +7,13 @@ import {
   AiOutlineEye,
   AiOutlineEyeInvisible,
   AiFillGithub,
+  AiOutlineInsertRowRight,
 } from "react-icons/ai";
 import { cn } from "../utils/Classes";
 import { styles } from "../styles/style";
 import { SiReactrouter } from "react-icons/si";
+import { useRegisterMutation } from "@/redux/features/auth/authApi";
+import toast from "react-hot-toast";
 interface Props {
   setRoute: (route: string) => void;
   setOpen: (open: boolean) => void;
@@ -26,16 +29,32 @@ const schema = Yup.object().shape({
     .required("Please Enter Your Password"),
 });
 const SignUp: React.FC<Props> = (props) => {
+  const { setRoute, setOpen } = props;
+  const [register, { isError, data, isSuccess, error }] = useRegisterMutation();
   const formik = useFormik({
     initialValues: { email: "", password: "", name: "" },
     validationSchema: schema,
     onSubmit: async ({ email, password, name }) => {
       console.log("submit");
-      props.setRoute("Verification");
+      const data = { name, email, password };
+      await register(data);
     },
   });
   const { errors, touched, values, handleChange, handleSubmit } = formik;
   const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    if (isSuccess) {
+      const message = data.message || "Registration successfull";
+      toast.success(message);
+      setRoute("Verification");
+    } else if (isError) {
+      if ("data" in error) {
+        const errorData = error as any;
+        toast.error(errorData.data.message);
+      }
+    }
+  }, [isSuccess, setRoute, data, isError, error]);
   return (
     <div className="w-full">
       <h1 className={styles.title}>Sign Up With ELearning</h1>

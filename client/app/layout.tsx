@@ -1,11 +1,14 @@
+"use client";
+
 import type { Metadata } from "next";
 import { Poppins, Josefin_Sans } from "next/font/google";
 import { ThemeProvider } from "./utils/theme-provider";
 import { cn } from "./utils/Classes";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
+import Providers from "./Provider";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "E Learning",
   description: "Platform for Project Based Learning",
 };
@@ -36,10 +39,13 @@ export default function RootLayout({
           "bg-white bg-no-repeat dark:bg-gradient-to-b from-gray-900 to-black duration-300",
         ])}
       >
-        <ThemeProvider attribute="class" defaultTheme="dark">
-          {children}
-          <Toaster position="top-center" reverseOrder={false} />
-        </ThemeProvider>
+        <Providers>
+          <ThemeProvider attribute="class" defaultTheme="dark">
+            {children}
+
+            <Toaster position="top-center" reverseOrder={false} />
+          </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

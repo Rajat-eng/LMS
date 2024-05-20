@@ -31,7 +31,7 @@ export const refreshTokenOptions: ITokenOptions = {
   sameSite: "lax",
 };
 export const sendToken = async (
-  user: Partial<IUser>,
+  user: IUser,
   statusCode: number,
   res: Response
 ) => {

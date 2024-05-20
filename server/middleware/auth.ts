@@ -20,12 +20,12 @@ export const isAuthenticated = CatchAsyncError(
       ) as JwtPayload;
 
       if (!decoded) {
-        return next(new ErrorHandler("invalid access token", 400));
+        throw new ErrorHandler("invalid access token", 400);
       }
       const user = await redis.get(decoded.id);
 
       if (!user) {
-        return next(new ErrorHandler("User not found", 400));
+        throw new ErrorHandler("User not found", 400);
       }
 
       req.user = JSON.parse(user);
